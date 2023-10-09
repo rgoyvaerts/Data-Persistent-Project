@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainManager : MonoBehaviour
 {
@@ -12,7 +13,9 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public GameObject GameOverText;
-    
+
+    public TMP_Text highScoreText;
+
     private bool m_Started = false;
     private int m_Points;
     
@@ -60,17 +63,26 @@ public class MainManager : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
+
     }
 
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        ScoreText.text = $"Score : {m_Points}"; 
     }
 
     public void GameOver()
     {
+        if (m_Points > DataManager.Instance.highscore)
+        {
+            highScoreText.text = "Best Score: " + m_Points;
+            DataManager.Instance.highscore = m_Points;
+            DataManager.Instance.WriteData();
+            Debug.Log("New Highscore Saved: " + m_Points);
+        }
         m_GameOver = true;
         GameOverText.SetActive(true);
+
     }
 }
